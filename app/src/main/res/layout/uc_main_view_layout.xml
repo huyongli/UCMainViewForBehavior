@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/news_view_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_height"
+        android:background="@color/colorPrimary"
+        app:layout_behavior="@string/behavior_ucview_title">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="UC头条"
+            android:textColor="@android:color/white"
+            android:paddingLeft="5dp"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/news_view_header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/behavior_ucview_header">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:gravity="center"
+            android:text="ICON导航区"/>
+
+    </FrameLayout>
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/news_view_tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_height"
+        app:tabBackground="@color/colorPrimary"
+        app:tabTextColor="@android:color/white"
+        app:tabIndicatorColor="@android:color/white"
+        app:layout_behavior="@string/behavior_ucview_tab"
+        app:tabGravity="fill"/>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/news_view_content_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/behavior_ucview_content"
+        android:background="@android:color/white"/>
+</android.support.design.widget.CoordinatorLayout>

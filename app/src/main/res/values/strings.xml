@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">UCMainViewForBehavior</string>
+
+    <string name="behavior_ucview_content">cn.ittiger.uc.view.behavior.UCViewContentBehavior</string>
+    <string name="behavior_ucview_tab">cn.ittiger.uc.view.behavior.UCViewTabBehavior</string>
+    <string name="behavior_ucview_title">cn.ittiger.uc.view.behavior.UCViewTitleBehavior</string>
+    <string name="behavior_ucview_header">cn.ittiger.uc.view.behavior.UCViewHeaderBehavior</string>
+</resources>
