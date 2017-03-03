@@ -12,7 +12,6 @@ import android.view.View;
  * Created by ylhu on 17-2-23.
  */
 public class UCViewTitleBehavior extends ViewOffsetBehavior<View> {
-    private int mCommonHeight;
 
     public UCViewTitleBehavior() {
 
@@ -22,7 +21,6 @@ public class UCViewTitleBehavior extends ViewOffsetBehavior<View> {
     public UCViewTitleBehavior(Context context, AttributeSet attrs) {
 
         super(context, attrs);
-        mCommonHeight = context.getResources().getDimensionPixelSize(R.dimen.common_height);
     }
 
     @Override
@@ -40,13 +38,9 @@ public class UCViewTitleBehavior extends ViewOffsetBehavior<View> {
 
     @Override
     public boolean onDependentViewChanged(CoordinatorLayout parent, View child, View dependency) {
-        offsetChildAsNeeded(parent, child, dependency);
-        return false;
-    }
 
-    private void offsetChildAsNeeded(CoordinatorLayout parent, View child, View dependency) {
-        int headerOffsetRange = getHeaderOffset();
-        int titleOffsetRange = getTitleHeight();
+        int headerOffsetRange = -child.getMeasuredHeight();
+        int titleOffsetRange = child.getMeasuredHeight();
         if (dependency.getTranslationY() == headerOffsetRange) {
             child.setTranslationY(titleOffsetRange);
         } else if (dependency.getTranslationY() == 0) {
@@ -54,17 +48,7 @@ public class UCViewTitleBehavior extends ViewOffsetBehavior<View> {
         } else {
             child.setTranslationY((int) (dependency.getTranslationY() / (headerOffsetRange * 1.0f) * titleOffsetRange));
         }
-
-    }
-
-    private int getHeaderOffset() {
-
-        return -mCommonHeight * 2;
-    }
-
-    private int getTitleHeight() {
-
-        return mCommonHeight;
+        return false;
     }
 
     private boolean isDependOn(View dependency) {

@@ -14,7 +14,7 @@ import java.util.List;
  * Created by ylhu on 17-2-23.
  */
 public class UCViewTabBehavior extends HeaderScrollingViewBehavior {
-    private int mCommonHeight;
+    private int mTitleViewHeight = 0;
 
     public UCViewTabBehavior() {
 
@@ -24,7 +24,13 @@ public class UCViewTabBehavior extends HeaderScrollingViewBehavior {
     public UCViewTabBehavior(Context context, AttributeSet attrs) {
 
         super(context, attrs);
-        mCommonHeight = context.getResources().getDimensionPixelSize(R.dimen.common_height);
+    }
+
+    @Override
+    protected void layoutChild(CoordinatorLayout parent, View child, int layoutDirection) {
+
+        mTitleViewHeight = parent.findViewById(R.id.news_view_title_layout).getMeasuredHeight();
+        super.layoutChild(parent, child, layoutDirection);
     }
 
     @Override
@@ -36,26 +42,19 @@ public class UCViewTabBehavior extends HeaderScrollingViewBehavior {
     @Override
     public boolean onDependentViewChanged(CoordinatorLayout parent, View child, View dependency) {
 
-        float offsetRange = getTabFinalTop() - dependency.getMeasuredHeight();
-        if(dependency.getTranslationY() == getHeaderOffset()) {//Header已经上滑结束
+        //TabView要滑动的距离为Header的高度减去TitleView的高度
+        float offsetRange = mTitleViewHeight - dependency.getMeasuredHeight();
+        //当Header向上滑动mTitleViewHeight高度后，即滑动完成
+        int headerOffsetRange = -mTitleViewHeight;
+
+        if(dependency.getTranslationY() == headerOffsetRange) {//Header已经上滑结束
             child.setTranslationY(offsetRange);
         } else if(dependency.getTranslationY() == 0) {//下滑结束
             child.setTranslationY(0);
         } else {
-            child.setTranslationY(dependency.getTranslationY() / (getHeaderOffset() * 1.0f) * offsetRange);
+            child.setTranslationY(dependency.getTranslationY() / (headerOffsetRange * 1.0f) * offsetRange);
         }
         return false;
-    }
-
-    private int getTabFinalTop() {
-
-        int titleHeight = mCommonHeight;
-        return titleHeight;
-    }
-
-    private int getHeaderOffset() {
-
-        return -mCommonHeight * 2;//Header设定允许滑动两个CommonHeight
     }
 
     @Override

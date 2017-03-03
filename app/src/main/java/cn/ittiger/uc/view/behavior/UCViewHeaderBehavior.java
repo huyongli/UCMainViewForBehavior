@@ -17,7 +17,7 @@ import java.lang.ref.WeakReference;
  * Created by ylhu on 17-2-23.
  */
 public class UCViewHeaderBehavior extends ViewOffsetBehavior<View> {
-    private int mCommonHeight;
+    private int mTitleViewHeight = 0;
     private OverScroller mOverScroller;
     private WeakReference<View> mChild;
 
@@ -36,7 +36,6 @@ public class UCViewHeaderBehavior extends ViewOffsetBehavior<View> {
     public UCViewHeaderBehavior(Context context, AttributeSet attrs) {
 
         super(context, attrs);
-        mCommonHeight = context.getResources().getDimensionPixelSize(R.dimen.common_height);
         mOverScroller = new OverScroller(context);
     }
 
@@ -44,6 +43,7 @@ public class UCViewHeaderBehavior extends ViewOffsetBehavior<View> {
     protected void layoutChild(CoordinatorLayout parent, View child, int layoutDirection) {
 
         super.layoutChild(parent, child, layoutDirection);
+        mTitleViewHeight = parent.findViewById(R.id.news_view_title_layout).getMeasuredHeight();
         mChild = new WeakReference<>(child);
     }
 
@@ -56,7 +56,7 @@ public class UCViewHeaderBehavior extends ViewOffsetBehavior<View> {
     private boolean canScroll(View child, float pendingDy) {
 
         int pendingTranslationY = (int) (child.getTranslationY() - pendingDy);
-        if (pendingTranslationY >= getHeaderOffset() && pendingTranslationY <= 0) {
+        if (pendingTranslationY >= getHeaderOffsetRange() && pendingTranslationY <= 0) {
             return true;
         }
         return false;
@@ -71,7 +71,7 @@ public class UCViewHeaderBehavior extends ViewOffsetBehavior<View> {
         if (!canScroll(child, halfOfDis)) {
             if(halfOfDis > 0) {
                 child.setVisibility(View.GONE);//滑动结束后，隐藏此视图
-                child.setTranslationY(getHeaderOffset());
+                child.setTranslationY(getHeaderOffsetRange());
             } else {
                 child.setTranslationY(0);
             }
@@ -85,9 +85,9 @@ public class UCViewHeaderBehavior extends ViewOffsetBehavior<View> {
         consumed[1] = dy;
     }
 
-    private int getHeaderOffset() {
+    private int getHeaderOffsetRange() {
 
-        return -mCommonHeight * 2;
+        return -mTitleViewHeight;
     }
 
     @Override
@@ -105,7 +105,7 @@ public class UCViewHeaderBehavior extends ViewOffsetBehavior<View> {
             mFlingRunnable = null;
         }
         mFlingRunnable = new FlingRunnable(child);
-        if (child.getTranslationY() < getHeaderOffset() / 4.0f) {
+        if (child.getTranslationY() < getHeaderOffsetRange() / 4.0f) {
             mFlingRunnable.scrollToClosed(DURATION_SHORT);
         } else {
             mFlingRunnable.scrollToOpen(DURATION_SHORT);
@@ -123,7 +123,7 @@ public class UCViewHeaderBehavior extends ViewOffsetBehavior<View> {
 
     private boolean isClosed(View child) {
 
-        return child.getTranslationY() == getHeaderOffset();
+        return child.getTranslationY() == getHeaderOffsetRange();
     }
 
     public boolean isClosed() {
@@ -188,7 +188,7 @@ public class UCViewHeaderBehavior extends ViewOffsetBehavior<View> {
 
         public void scrollToClosed(int duration) {
             float curTranslationY = ViewCompat.getTranslationY(mLayout);
-            float dy = getHeaderOffset() - curTranslationY;
+            float dy = getHeaderOffsetRange() - curTranslationY;
             mOverScroller.startScroll(0, Math.round(curTranslationY - 0.1f), 0, Math.round(dy + 0.1f), duration);
             start();
         }
