@@ -1,6 +1,6 @@
 # UCMainViewForBehavior
 
-## 使用Behavior高仿实现UC浏览器首页上下滑动效果
+## 使用[Behavior高仿实现UC浏览器首页上下滑动效果](http://ittiger.cn/Behavior-UC-Main-Page.html)
 
 ### 之前使用自定义View的方式实现过这个效果，感兴趣的可以看看[UCIndexAnimation](https://github.com/huyongli/UCIndexAnimation)
 

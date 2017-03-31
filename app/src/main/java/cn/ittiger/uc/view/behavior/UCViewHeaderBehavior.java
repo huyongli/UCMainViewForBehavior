@@ -50,9 +50,16 @@ public class UCViewHeaderBehavior extends ViewOffsetBehavior<View> {
     @Override
     public boolean onStartNestedScroll(CoordinatorLayout coordinatorLayout, View child, View directTargetChild, View target, int nestedScrollAxes) {
 
+        //开始滑动的条件，垂直方向滑动，滑动未结束
         return nestedScrollAxes == ViewCompat.SCROLL_AXIS_VERTICAL && canScroll(child, 0) && !isClosed(child);
     }
 
+    /**
+     * 当前是否可以滑动
+     * @param child
+     * @param pendingDy     Y轴方向滑动的translationY
+     * @return
+     */
     private boolean canScroll(View child, float pendingDy) {
 
         int pendingTranslationY = (int) (child.getTranslationY() - pendingDy);
@@ -66,25 +73,33 @@ public class UCViewHeaderBehavior extends ViewOffsetBehavior<View> {
     public void onNestedPreScroll(CoordinatorLayout coordinatorLayout, View child, View target, int dx, int dy, int[] consumed) {
 
         super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed);
-        //dy>0 scroll up;dy<0,scroll down
+        //开始滑动之前的逻辑处理
+
+        //dy>0 向上滑
+        //dy<0 向下滑
         float halfOfDis = dy / 4.0f;
-        if (!canScroll(child, halfOfDis)) {
+        if (!canScroll(child, halfOfDis)) {//滑动结束
             if(halfOfDis > 0) {
                 child.setVisibility(View.GONE);//滑动结束后，隐藏此视图
                 child.setTranslationY(getHeaderOffsetRange());
             } else {
                 child.setTranslationY(0);
             }
-        } else {
+        } else {//滑动未结束
             if(halfOfDis <= 0) {
                 child.setVisibility(View.VISIBLE);
             }
+            //滑动
             child.setTranslationY(child.getTranslationY() - halfOfDis);
         }
-        //consumed all scroll behavior after we started Nested Scrolling
+        //消耗掉当前垂直方向上的滑动距离
         consumed[1] = dy;
     }
 
+    /**
+     * 向上滑动过程时translationY的最小值
+     * @return
+     */
     private int getHeaderOffsetRange() {
 
         return -mTitleViewHeight;
@@ -94,6 +109,7 @@ public class UCViewHeaderBehavior extends ViewOffsetBehavior<View> {
     public boolean onInterceptTouchEvent(CoordinatorLayout parent, View child, MotionEvent ev) {
 
         if(ev.getAction() == MotionEvent.ACTION_UP) {
+            //对松开手指时进行处理，如果松开时滑动滑动了1/4则自动滑动到结束，否则则回归原位
             handlerActionUp(child);
         }
         return super.onInterceptTouchEvent(parent, child, ev);
@@ -121,6 +137,11 @@ public class UCViewHeaderBehavior extends ViewOffsetBehavior<View> {
         }
     }
 
+    /**
+     * 是否滑动结束
+     * @param child
+     * @return
+     */
     private boolean isClosed(View child) {
 
         return child.getTranslationY() == getHeaderOffsetRange();
@@ -173,12 +194,6 @@ public class UCViewHeaderBehavior extends ViewOffsetBehavior<View> {
 
 
     private FlingRunnable mFlingRunnable;
-
-    /**
-     * For animation , Why not use {@link android.view.ViewPropertyAnimator } to play animation is of the
-     * other {@link android.support.design.widget.CoordinatorLayout.Behavior} that depend on this could not receiving the correct result of
-     * {@link View#getTranslationY()} after animation finished for whatever reason that i don't know
-     */
     private class FlingRunnable implements Runnable {
         private final View mLayout;
 

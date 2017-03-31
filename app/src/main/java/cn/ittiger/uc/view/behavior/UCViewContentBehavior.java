@@ -28,6 +28,12 @@ public class UCViewContentBehavior extends HeaderScrollingViewBehavior {
     }
 
     @Override
+    public boolean layoutDependsOn(CoordinatorLayout parent, View child, View dependency) {
+
+        return isDependency(dependency);
+    }
+
+    @Override
     protected void layoutChild(CoordinatorLayout parent, View child, int layoutDirection) {
 
         mTitleViewHeight = parent.findViewById(R.id.news_view_title_layout).getMeasuredHeight();
@@ -36,16 +42,15 @@ public class UCViewContentBehavior extends HeaderScrollingViewBehavior {
     }
 
     @Override
-    public boolean layoutDependsOn(CoordinatorLayout parent, View child, View dependency) {
-
-        return isDependency(dependency);
-    }
-
-    @Override
     public boolean onDependentViewChanged(CoordinatorLayout parent, View child, View dependency) {
 
         int headerOffsetRange = -mTitleViewHeight;
-        //因为Content是往上滑，所以setTranslationY值为负值，而dependency.getTranslationY()和headerOffsetRange均为负值，所以前面加-号
+        //因为UCViewContent与依赖UCViewHeader为同向滑动
+        //所以UCViewHeader向上滑即translationY为负数时，UCViewContent也向上滑其translationY也为负数
+        //所以UCViewHeader向上滑即translationY为正数时，UCViewContent也向上滑其translationY也为正数
+        //而headerOffsetRange为负数，getScrollRange(dependency)为正数，所以最前面要加上一个负号
+
+        //计算方式与UCViewTab的计算方式一样
         child.setTranslationY(-dependency.getTranslationY() / (headerOffsetRange * 1.0f) * getScrollRange(dependency));
         return false;
     }
@@ -54,7 +59,7 @@ public class UCViewContentBehavior extends HeaderScrollingViewBehavior {
     protected int getScrollRange(View dependency) {
 
         if(isDependency(dependency)) {
-            //Header Icon导航区的高度，减去最后Tab和Title的高度就是Content最终要滑动的高度
+            //UCViewHeader的高度，减去UCViewTab和UCViewTitle的高度就是UCViewContent要滑动的高度
             return dependency.getMeasuredHeight() - mTitleViewHeight - mTabViewHeight;
         }
         return super.getScrollRange(dependency);

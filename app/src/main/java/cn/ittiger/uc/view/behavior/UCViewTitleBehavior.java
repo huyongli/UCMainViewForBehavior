@@ -26,6 +26,7 @@ public class UCViewTitleBehavior extends ViewOffsetBehavior<View> {
     @Override
     public boolean onLayoutChild(CoordinatorLayout parent, View child, int layoutDirection) {
 
+        //因为UCViewTitle默认是在屏幕外不可见，所以在UCViewTitle进行布局的时候设置其topMargin让其不可见
         ((CoordinatorLayout.LayoutParams) child.getLayoutParams()).topMargin = -child.getMeasuredHeight();
         return super.onLayoutChild(parent, child, layoutDirection);
     }
@@ -39,15 +40,9 @@ public class UCViewTitleBehavior extends ViewOffsetBehavior<View> {
     @Override
     public boolean onDependentViewChanged(CoordinatorLayout parent, View child, View dependency) {
 
-        int headerOffsetRange = -child.getMeasuredHeight();
-        int titleOffsetRange = child.getMeasuredHeight();
-        if (dependency.getTranslationY() == headerOffsetRange) {
-            child.setTranslationY(titleOffsetRange);
-        } else if (dependency.getTranslationY() == 0) {
-            child.setTranslationY(0);
-        } else {
-            child.setTranslationY((int) (dependency.getTranslationY() / (headerOffsetRange * 1.0f) * titleOffsetRange));
-        }
+        //因为UCViewTitle与UCViewHeader的滑动方向相反
+        //所以当依赖UCViewHeader发生变化时，只需要时设置反向的translationY即可
+        child.setTranslationY(-dependency.getTranslationY());
         return false;
     }
 
