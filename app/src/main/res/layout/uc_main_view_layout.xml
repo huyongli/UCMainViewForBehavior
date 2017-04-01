@@ -20,19 +20,37 @@
             android:paddingLeft="5dp"/>
     </FrameLayout>
 
-    <FrameLayout
+    <!-- 此FrameLayout对应UCViewHeader,下面布局UCViewHeader的也支持滑动 -->
+    <android.support.v4.widget.NestedScrollView
         android:id="@+id/news_view_header_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="@string/behavior_ucview_header">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:gravity="center"
+                android:text="ICON导航区"/>
 
+        </FrameLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+    <!-- 此FrameLayout对应UCViewHeader,下面布局UCViewHeader的不支持滑动 -->
+    <!--<FrameLayout
+        android:id="@+id/news_view_header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/behavior_ucview_header">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:gravity="center"
             android:text="ICON导航区"/>
 
-    </FrameLayout>
+    </FrameLayout>-->
 
     <android.support.design.widget.TabLayout
         android:id="@+id/news_view_tab_layout"
